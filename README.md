@@ -22,7 +22,10 @@ All rights to the original artwork belong to its respective creator.
 * A PC with Linux
 * Linux with PipeWire
 * Python 3 (tested on 3.13)
-* xcb plugin for qt (sudo apt-get install libxcb-cursor0 libxcb-render-util0 libxcb-image0 libxcb-keysyms1 libxcb-icccm4)
+* xcb plugin for qt
+```bash
+  sudo apt-get install libxcb-cursor0 libxcb-render-util0 libxcb-image0 libxcb-keysyms1 libxcb-icccm4
+```
 * as-cmd (0.34 or later) from [mkckr0/audio-share](https://github.com/mkckr0/audio-share/releases)
 
 ## Install/Run from Source
