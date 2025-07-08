@@ -1,0 +1,38 @@
+.config-div{
+    border-radius: 0.5%;
+    border-color: black;
+    border-style: solid;
+    background-color: rgb(37, 37, 37);
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 3%;
+    width: 95%;
+    margin: auto;
+    margin-bottom: 2%;
+}
+
+.config-div h1{
+    font-size: medium
+}
+
+.config-div select{
+    color: black;
+}
+
+.config-div option{
+    color: black;
+}
+
+.config-div .active{
+    color: white;
+    background-color: rgb(3, 160, 74);
+}
+
+.config-div input{
+    color: black;
+    background-color: rgb(155, 155, 155);
+}
+.config-div textarea{
+    background-color: rgb(155, 155, 155);
+    color: black;
+}

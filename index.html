@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>My PyQt Webview App</title>
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="script.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <style>
+        body{
+            background-color: rgb(45, 45, 45);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bootstrap js -->
+    <script src="./js/bootstrap.bundle.js"></script>
+    <div class="my-4">
+        <div class="config-div">
+            <h1>Server Address</h1>
+            <table style="width: 75%;margin: auto;">
+                <tr>
+                    <td><label for="serverAddress">Host<input class="ms-2" id="serverAddress" type="text"/></label></td>
+                    <td><label for="serverPort">Port<input class="ms-2" id="serverPort" type="number" value="65530"/></label></td>
+                </tr>
+            </table>
+        </div>
+        <div class="config-div">
+            <h1>Capture</h1>
+
+
+            <!-- 
+            <div class="dropdown">
+                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Dropdown link
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+            </div> 
+            -->
+
+
+            <div class="my-2 text-center">
+                <label class="px-3">Audio Endpoint <select class="mx-2" id="endpointList" onchange="OnEndpointChange();"></select></label>
+                <label class="px-3">Encoding <select class="mx-2" id="encodingList" onchange="OnEndpointChange();"></select></label>
+            </div>
+            <div class="mb-2">
+                
+            </div>
+        </div>
+        <div class="config-div">
+            <h1>Action</h1>
+            
+            <div style="width: auto;margin: auto;text-align: center;">
+                <button class="btn btn-primary mx-3 my-2" id="ToggleServer">Start Server</button>
+                <button class="btn btn-primary mx-3 my-2" id="ResetServer">Reset</button>
+            </div>
+            
+        </div>
+        <div class="config-div">
+            <h1>Logs</h1>
+            <textarea style="width: 100%;" id="serverOutput" rows="4" cols="50" disabled></textarea>
+        </div>
+    </div>
+</body>
+</html>

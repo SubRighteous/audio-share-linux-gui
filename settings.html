@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>My PyQt Webview App</title>
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="settings_script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="./css/picnic.min.css"> -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <style>
+        body{
+            background-color: rgb(45, 45, 45);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="my-4 config-div">
+        <h1>Behavior</h1>
+        <div class="config-div">
+            <h1>When App Starts</h1>
+            
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioAppStarts" id="radioNothing" value="Nothing" checked onclick="OnDoNothingRadioClick();">
+                <label class="form-check-label" for="radioNothing">
+                    Do Nothing
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioAppStarts" id="radioStartServer" value="StartServer" onclick="OnStartServerRadioClick();">
+                <label class="form-check-label" for="radioStartServer">
+                    Start Server
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioAppStarts" id="radioKeepLastState" value="KeepLastState" onclick="OnKeepLastStateRadioClick();">
+                <label class="form-check-label" for="radioKeepLastState">
+                    Keep Last State
+                </label>
+            </div>
+
+
+        </div>
+        <p id="logs"></p>
+        <div class="config-div">
+            <h1>When click close button</h1>
+            
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioClose" id="radioExit" value="False" checked onclick="SetCloseBehaviour(false);">
+                <label class="form-check-label" for="radioExit">
+                    Exit
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="radioClose" id="radioMinimizeToTray" value="True" onclick="SetCloseBehaviour(true);">
+                <label class="form-check-label" for="radioMinimizeToTray">
+                    Minimize To System Tray
+                </label>
+            </div>
+            
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-primary" onclick="SaveSetting();">Save</button>
+        </div>
+        
+    </div>
+</body>
+</html>
