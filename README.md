@@ -39,11 +39,11 @@ Go to the project directory
 
 (Optional) Make an python virutal enviroment
 ```bash
-  python -m venv
+  python -m venv .venv
 ```
 Activate the python venv
 ```bash
-  source venv/bin/activate
+  source .venv/bin/activate
 ```
 Install dependencies
 
@@ -54,12 +54,12 @@ Install dependencies
 Start the app (with python venv)
 
 ```bash
-  <venv path>/bin/python <app path>/AudioShare_LinuxGUI/src/main.py
+  .venv/bin/python ./src/main.py
 ```
 
 Start the app (without python venv)
 ```
-  <python install path>/bin/python <app path>/AudioShare_LinuxGUI/src/main.py
+  <python install path>/bin/python ./src/main.py
 ```
 ## Used Third-party Libraries
 
