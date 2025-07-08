@@ -71,8 +71,20 @@ class Finder():
                 })
         print(encoding)
         return encoding
-
-    
+        
+    def get_local_ipv4_address(self):
+        """
+        Retrieves the local IPv4 address of the machine.
+        """
+        try:
+            # Get the hostname of the local machine
+            hostname = socket.gethostname()
+            # Resolve the hostname to its corresponding IP address
+            ip_address = socket.gethostbyname(hostname)
+            return ip_address
+        except socket.error as e:
+            print(f"Error getting IP address: {e}")
+            return None
 
 
 class ServerThread(QThread):
