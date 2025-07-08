@@ -71,20 +71,23 @@ class Finder():
                 })
         print(encoding)
         return encoding
-        
+
     def get_local_ipv4_address(self):
         """
         Retrieves the local IPv4 address of the machine.
         """
         try:
-            # Get the hostname of the local machine
-            hostname = socket.gethostname()
-            # Resolve the hostname to its corresponding IP address
-            ip_address = socket.gethostbyname(hostname)
+            # Connect to an external address; doesn't have to succeed
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                # Doesn't actually send data; just used to get the right interface
+                s.connect(("8.8.8.8", 80))
+                ip_address = s.getsockname()[0]
             return ip_address
         except socket.error as e:
             print(f"Error getting IP address: {e}")
             return None
+
+    
 
 
 class ServerThread(QThread):
@@ -239,11 +242,7 @@ class Backend(QObject):
         Retrieves the local IPv4 address of the machine.
         """
         try:
-            # Get the hostname of the local machine
-            hostname = socket.gethostname()
-            # Resolve the hostname to its corresponding IP address
-            ip_address = socket.gethostbyname(hostname)
-            return ip_address
+            return Finder().get_local_ipv4_address()
         except socket.error as e:
             print(f"Error getting IP address: {e}")
             return None
