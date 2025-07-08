@@ -28,13 +28,13 @@ All rights to the original artwork belong to its respective creator.
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/SubRighteous/audio-share-linux-gui
 ```
 
 Go to the project directory
 
 ```bash
-  cd my-project
+  cd audio-share-linux-gui
 ```
 
 (Optional) Make an python virutal enviroment
