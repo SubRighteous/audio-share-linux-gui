@@ -15,8 +15,8 @@ All rights to the original artwork belong to its respective creator.
 
 ## Screenshots
 
-![app_screenshot_01](https://github.com/user-attachments/assets/021cc3be-b3c9-4211-8040-631be217dcd7)
-![app_screenshot_02](https://github.com/user-attachments/assets/6d770ab4-1fc8-4995-b316-f791cd1a9c5c)
+![app_screenshot_01](https://github.com/user-attachments/assets/4bb75056-9db3-45f0-b8b8-9307df94ae4a)
+![app_screenshot_02](https://github.com/user-attachments/assets/04e6852e-6300-45d4-8eb1-8a25fdbe2a3e)
 
 ## Requirements
 * A PC with Linux
