@@ -168,9 +168,9 @@ class MainWindow(QMainWindow):
                 # Handle the case where the file doesn't have the basic keys
                 # Remake the file
                 with open('config.ini', 'w') as configfile:
-                    Endpoints = Finder.getEndpointList()
-                    Encoding = Finder.getEncodingList()
-                    config_settings['Server Settings'] = {'serverIP' : f'{self.backend.get_local_ipv4_address()}', 'serverPort' : '65530' , 'endpoint' : f'{Endpoints[0]['id']}' , 'encoding' : f'{Encoding[0]['key']}'}
+                    Endpoints = Finder().getEndpointList()
+                    Encoding = Finder().getEncodingList()
+                    config_settings['Server Settings'] = {'serverIP' : f'{Finder().get_local_ipv4_address()}', 'serverPort' : '65530' , 'endpoint' : f'{Endpoints[0]['id']}' , 'encoding' : f'{Encoding[0]['key']}'}
                     config_settings['App Settings'] = {'AutoStart' : 'False','KeepLastState' : 'False', 'MinimizeToTray' : 'False'}
                     # Save in-memory config to ini file
                     config_settings.write(configfile)
@@ -181,9 +181,9 @@ class MainWindow(QMainWindow):
             print(f"Configuration file '{config_file_path}' not found.")
             # Handle the case where the file doesn't exist, e.g., create a default one
             with open('config.ini', 'w') as configfile:
-                Endpoints = Finder.getEndpointList()
-                Encoding = Finder.getEncodingList()
-                config_settings['Server Settings'] = {'serverIP' : f'{self.backend.get_local_ipv4_address()}', 'serverPort' : '65530' , 'endpoint' : f'{Endpoints[0]['id']}' , 'encoding' : f'{Encoding[0]['key']}'}
+                Endpoints = Finder().getEndpointList()
+                Encoding = Finder().getEncodingList()
+                config_settings['Server Settings'] = {'serverIP' : f'{Finder().backend.get_local_ipv4_address()}', 'serverPort' : '65530' , 'endpoint' : f'{Endpoints[0]['id']}' , 'encoding' : f'{Encoding[0]['key']}'}
                 config_settings['App Settings'] = {'AutoStart' : 'False','KeepLastState' : 'False', 'MinimizeToTray' : 'False'}
                 # Save in-memory config to ini file
                 config_settings.write(configfile)
