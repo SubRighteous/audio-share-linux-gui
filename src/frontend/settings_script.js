@@ -59,6 +59,7 @@ function OnDoNothingRadioClick(){
     if(backend != null){
         backend.setAutoStart(false);
         backend.setKeepLastState(false);
+        SaveSetting();
     }
 }
 
@@ -66,6 +67,7 @@ function OnStartServerRadioClick(){
     if(backend != null){
         backend.setAutoStart(true);
         backend.setKeepLastState(false);
+        SaveSetting();
     }
 }
 
@@ -73,6 +75,7 @@ function OnKeepLastStateRadioClick(){
     if(backend != null){
         backend.setAutoStart(false);
         backend.setKeepLastState(true);
+        SaveSetting();
     }
 }
 

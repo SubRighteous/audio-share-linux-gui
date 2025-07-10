@@ -53,13 +53,13 @@ window.onload = function() {
         });
 
 
-        backend.get_local_ipv4_address(function(ip){
+        backend.getServerAddress(function(ip){
             serverAddressInput.value = ip;
         });
 
         // Get Audio Endpoints
         backend.getEndpointList(function(endpoints) {
-            console.log("Received endpoints:", endpoints);
+            //console.log("Received endpoints:", endpoints);
         
             
             let select = document.getElementById("endpointList");
@@ -122,6 +122,8 @@ window.onload = function() {
             });
         });
         
+        //Notify that the page is done loading
+        backend.PageIsDoneLoading();
     });
 };
 
@@ -148,6 +150,7 @@ function OnEndpointChange(){
 
         if (optionValue == select.value){
             options[i].classList.add("active");
+            backend.setEncodingName(optionText)
         }
         else{
             options[i].classList.remove("active");
