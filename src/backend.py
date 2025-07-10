@@ -4,6 +4,7 @@ import re
 
 from PyQt6.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal, QThread
 
+
 def string_to_bool(s):
     s_lower = s.lower()
     if s_lower in ('true', 'True', '1'):
@@ -16,7 +17,7 @@ def string_to_bool(s):
         raise ValueError(f"Cannot convert '{s}' to a boolean.")
 
 # Gets Information from 'as-cmd'
-class Finder():
+class AudioShare():
     def getEndpointList(self):
 
         # Get the list of device endpoints
@@ -45,6 +46,17 @@ class Finder():
                 })
 
         return endpoints
+
+    def get_endpoint_id_from_name(self, name):
+        endpoint_list = self.getEndpointList()
+        endpoint_id = None
+
+        for ep in endpoint_list:
+            if name == ep['name']:
+                endpoint_id = ep['id']
+
+        return endpoint_id
+        
     
     def getEncodingList(self):
         # Get the list of encoding
@@ -69,7 +81,7 @@ class Finder():
                     'key': encoding_key,
                     'description' : description
                 })
-        print(encoding)
+        
         return encoding
 
     def get_local_ipv4_address(self):
@@ -141,6 +153,7 @@ class Backend(QObject):
     serverPort = None
 
     audio_endpoint_id = None
+    audio_endpoint_name = None
     audio_encoding = None
 
     def __init__(self , config_file):
@@ -148,14 +161,18 @@ class Backend(QObject):
         self.config_settings = config_file
         if config_file is not None:
             self.setEncoding(config_file['Server Settings']['encoding'])
-            self.setEndpoint(config_file['Server Settings']['endpoint'])
-            #self.setAutoStart(config_file['App Settings']['autostart'])
-            #self.setMinimizeToTray(config_file['App Settings']['minimizetotray'])
-            #self.setKeepLastState(config_file['App Settings']['keeplaststate'])
-            #print(self.settings.AutoStart)
-            #print(self.settings.MinimizeToTray)
-            #print(self.settings.KeepLastState)
+            
+            self.setServerIp(config_file['Server Settings']['serverip'])
+            self.setServerPort(config_file['Server Settings']['serverport'])
 
+            self.audio_endpoint_name = config_file['Server Settings']['endpoint_name']
+
+            if AudioShare().get_endpoint_id_from_name(self.audio_endpoint_name) == config_file['Server Settings']['endpoint']:
+                self.setEndpoint(config_file['Server Settings']['endpoint'])
+            else:
+                self.setEndpoint(AudioShare().get_endpoint_id_from_name(self.audio_endpoint_name))
+            
+            
     @pyqtSlot(result='QVariant')
     def getEndpointList(self):
 
@@ -210,28 +227,24 @@ class Backend(QObject):
                     'key': encoding_key,
                     'description' : description
                 })
-        print(encoding)
+        
         return encoding
 
     def is_endpoint_exist(self, target_endpoint):
-        #print(type(target_endpoint))
+        
         for d in self.getEndpointList():
-            #print(d['id'])
+            
             if target_endpoint == d['id']:
-                #print(str(target_endpoint) + " VS " + str(target_endpoint))
                 return True
             
         return False
 
     def is_encoding_supported(self, target_encoding):
-        #print(type(target_encoding))
+        
         for encode in self.getEncodingList():
             if target_encoding == encode['key']:
-                #print(str(target_encoding) + " VS " + str(encode['key']))
                 return True
         return False
-
-    
 
     serverStatusChanged = pyqtSignal(bool)
     serverlogOutput = pyqtSignal(str)
@@ -242,10 +255,18 @@ class Backend(QObject):
         Retrieves the local IPv4 address of the machine.
         """
         try:
-            return Finder().get_local_ipv4_address()
+            return AudioShare().get_local_ipv4_address()
         except socket.error as e:
             print(f"Error getting IP address: {e}")
             return None
+
+    @pyqtSlot(result='QVariant')
+    def getServerAddress(self):
+        # If we don't have a set server address from the config file then default to the system local ipv4
+        if self.serverAddress is None:
+            return self.get_local_ipv4_address()
+        else:
+            return self.serverAddress
 
     @pyqtSlot(int)
     def setEndpoint(self, endpoint_id):
@@ -261,6 +282,11 @@ class Backend(QObject):
     def setEncoding(self, encode_key):
         print("Setting Encoding to " + str(encode_key))
         self.audio_encoding = str(encode_key)
+
+    @pyqtSlot(str)
+    def setEncodingName(self, encoding_name):
+        print("Setting Encoding Name to " + str(encoding_name))
+        self.audio_endpoint_name = str(encoding_name)
 
     @pyqtSlot(result=str)
     def getEncoding(self):
@@ -293,7 +319,7 @@ class Backend(QObject):
             if self.serverAddress is None or self.serverPort is None:
                 self.serverThread = ServerThread(["./as-cmd", "--bind"])
             else:
-                #print(type(self.audio_endpoint_id))
+                
                 if self.is_endpoint_exist(self.audio_endpoint_id) is False and self.is_encoding_supported(self.audio_encoding) is False:
                     if len(str(self.serverAddress)) == 0 and len(str(self.serverPort)) > 0:
                         self.serverThread = ServerThread(["./as-cmd", "--bind=" + str(self.get_local_ipv4_address()) + ":" + str(self.serverPort)])
@@ -333,7 +359,19 @@ class Backend(QObject):
 
     def cleanup(self):
         
+        # We don't need to save every time, just when the value is different
+        if self.config_settings['App Settings']['server_laststate'] == str(self.ServerRunning):
+            pass
+        else:
+            # Save wether the server was running or not
+            print("Saving server state to config.ini")
+            with open('config.ini', 'w') as config_file:
+                self.config_settings.set('App Settings', 'server_laststate' , str(self.ServerRunning))
+
+                self.config_settings.write(config_file)
+
         if self.serverThread is not None:
+
             print("Closing the server")
             self.setServerRunning(False)
             self.serverThread.stop()
@@ -349,12 +387,26 @@ class Backend(QObject):
             self.serverStatusChanged.emit(status)
 
     @pyqtSlot()
+    def PageIsDoneLoading(self):
+        if string_to_bool(self.config_settings['App Settings']['autostart']) is True:
+            self.toggleServer()
+        elif string_to_bool(self.config_settings['App Settings']['keeplaststate']) is True:
+            if string_to_bool(self.config_settings['App Settings']['server_laststate']) is True:
+                self.toggleServer()
+            else:
+                pass
+
+    @pyqtSlot()
     def saveSettings(self):
+        if self.config_settings['Server Settings']['serverip'] == str(self.serverAddress) and self.config_settings['Server Settings']['serverport'] == str(self.serverPort) and self.config_settings['Server Settings']['endpoint'] == str(self.audio_endpoint_id) and self.config_settings['Server Settings']['encoding'] == str(self.audio_encoding) and self.config_settings['Server Settings']['endpoint_name'] == str(self.audio_endpoint_name):
+            return
+
         print("Saving settings to config.ini")
         with open('config.ini', 'w') as config_file:
             self.config_settings.set('Server Settings' , 'serverip' , str(self.serverAddress))
             self.config_settings.set('Server Settings', 'serverport' , str(self.serverPort))
             self.config_settings.set('Server Settings', 'endpoint' , str(self.audio_endpoint_id))
+            self.config_settings.set('Server Settings', 'endpoint_name', f'{str(self.audio_endpoint_name)}')
             self.config_settings.set('Server Settings', 'encoding' , str(self.audio_encoding))
 
             self.config_settings.write(config_file)
@@ -378,9 +430,7 @@ class SettingsBackend(QObject):
             self.setAutoStart(config_file['App Settings']['autostart'])
             self.setMinimizeToTray(config_file['App Settings']['minimizetotray'])
             self.setKeepLastState(config_file['App Settings']['keeplaststate'])
-            print(self.settings.AutoStart)
-            print(self.settings.MinimizeToTray)
-            print(self.settings.KeepLastState)
+            
         
     @pyqtSlot(bool)
     def setAutoStart(self, state : bool):
@@ -408,11 +458,13 @@ class SettingsBackend(QObject):
 
     @pyqtSlot(result=bool)
     def getKeepLastState(self):
-        #print("Requesting self.settings.KeepLastState")
         return string_to_bool(self.settings.KeepLastState)
 
     @pyqtSlot()
     def saveSettings(self):
+        if self.config_settings['App Settings']['autostart'] == str(self.settings.AutoStart) and self.config_settings['App Settings']['keeplaststate'] == str(self.settings.KeepLastState) and self.config_settings['App Settings']['minimizetotray'] == str(self.settings.MinimizeToTray):
+            return
+
         print("Saving settings to config.ini")
         with open('config.ini', 'w') as config_file:
 

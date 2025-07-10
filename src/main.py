@@ -1,28 +1,28 @@
 import sys
 from configparser import ConfigParser
 
-from PyQt6.QtWidgets import QApplication ,QMainWindow, QWidget, QVBoxLayout , QTabWidget , QSystemTrayIcon , QMenu, QStyle
+from PyQt6.QtWidgets import QApplication ,QMainWindow, QWidget, QVBoxLayout , QTabWidget , QSystemTrayIcon , QMenu
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtWebChannel import QWebChannel
-from PyQt6.QtCore import QUrl, QSize , Qt
+from PyQt6.QtCore import QUrl
 from PyQt6.QtGui import QIcon , QAction
 import os
-from backend import Backend, SettingsBackend , Finder
+from backend import Backend, SettingsBackend , AudioShare , string_to_bool
 
 config_settings = None
 secondary_window = None
 
-def string_to_bool(s):
-    s_lower = s.lower()
-    if s_lower in ('true', 'True', '1'):
-        return True
-    elif s_lower in ('false', 'False', '0'):
-        return False
-    else:
-        # Handle cases where the string doesn't match expected "true" or "false" values
-        # You might raise an error, return None, or return bool(s) as a fallback
-        raise ValueError(f"Cannot convert '{s}' to a boolean.")
+# Creates a new Config File with default values
+def create_new_config_file():
+    with open('config.ini', 'w') as configfile:
+        Endpoints = AudioShare().getEndpointList()
+        Encoding = AudioShare().getEncodingList()
+        config_settings['Server Settings'] = {'serverIP' : f'{AudioShare().get_local_ipv4_address()}', 'serverPort' : '65530' , 'endpoint' : f'{Endpoints[0]['id']}' , 'endpoint_name': f'{Endpoints[0]['name']}', 'encoding' : f'{Encoding[0]['key']}'}
+        config_settings['App Settings'] = {'AutoStart' : 'False','KeepLastState' : 'False', 'MinimizeToTray' : 'False' , 'server_laststate' : False}
+
+        # Save in-memory config to ini file
+        config_settings.write(configfile)
 
 class LoggingWebEnginePage(QWebEnginePage):
     def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
@@ -45,7 +45,6 @@ class WebTab(QWebEngineView):
         # Load local HTML file
         self.load(QUrl.fromLocalFile(html_path))
 
-        
 
 class SettingsWindow(QMainWindow):
     def __init__(self, url , settings_channel):
@@ -80,71 +79,6 @@ class SettingsWindow(QMainWindow):
         event.accept()
         
 
-# def main():
-
-#     backend = Backend()
-#     print(backend.getEndpointList())
-#     backend.request_applicationSettings.connect(ApplcationSettings)
-
-#     # Create a ConfigParser object
-#     global config_settings
-#     config_settings = ConfigParser()
-
-
-#     config_file_path = 'config.ini'  # Replace with your actual file path
-
-#     if os.path.exists(config_file_path):
-#         config_settings.read(config_file_path)
-#         print(f"Configuration file '{config_file_path}' found and loaded.")
-#         # You can now access sections and options from 'config_settings'
-
-#     else:
-#         # Default Config Creation
-
-#         print(f"Configuration file '{config_file_path}' not found.")
-#         # Handle the case where the file doesn't exist, e.g., create a default one
-#         with open('config.ini', 'w') as configfile:
-#             config_settings['Server Settings'] = {'serverIP' : f'{backend.get_local_ipv4_address()}', 'serverPort' : '65530'}
-#             config_settings['App Settings'] = {'AutoStart' : 'False','KeepLastState' : 'False', 'MinimizeToTray' : 'False'}
-#             # Save in-memory config to ini file
-#             config_settings.write(configfile)
-
-#     app = QApplication(sys.argv)
-
-#     app.setApplicationName("Audio-Share PyQT")
-    
-#     webview = QWebEngineView()
-
-#     webview.setPage(type("TempPage", (QWebEnginePage,), {
-#         "javaScriptConsoleMessage": lambda self, level, msg, line, src: print(
-#             f"[JS {level.name}] {msg} (line {line}, source {src})")
-#     })(webview))
-
-#     # Set up the backend bridge
-#     channel = QWebChannel()
-    
-#     channel.registerObject('backend', backend)
-#     webview.page().setWebChannel(channel)
-
-#     # Build a full URL path to your local index.html
-#     current_dir = os.path.dirname(os.path.abspath(__file__))
-#     html_file = os.path.join(current_dir, "frontend", "index.html")
-#     local_url = QUrl.fromLocalFile(html_file)
-
-#     # Set the window icon
-#     app.setWindowIcon(QIcon(os.path.join(current_dir, "assets", "icon.png")))
-
-#     webview.load(local_url)
-#     webview.setWindowTitle("Audio Share Server")
-#     webview.resize(800, 600)
-#     webview.show()
-
-#     webview.setMinimumSize(QSize(650, 500))
-
-#     app.aboutToQuit.connect(backend.cleanup)
-
-#     sys.exit(app.exec())
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -162,31 +96,20 @@ class MainWindow(QMainWindow):
             # You can now access sections and options from 'config_settings'
 
             try:
-                ServerSettings = config_settings['Server Settings']
-                AppSettings = config_settings['App Settings']
+                config_settings['Server Settings']
+                config_settings['App Settings']
             except KeyError:
                 # Handle the case where the file doesn't have the basic keys
                 # Remake the file
-                with open('config.ini', 'w') as configfile:
-                    Endpoints = Finder().getEndpointList()
-                    Encoding = Finder().getEncodingList()
-                    config_settings['Server Settings'] = {'serverIP' : f'{Finder().get_local_ipv4_address()}', 'serverPort' : '65530' , 'endpoint' : f'{Endpoints[0]['id']}' , 'encoding' : f'{Encoding[0]['key']}'}
-                    config_settings['App Settings'] = {'AutoStart' : 'False','KeepLastState' : 'False', 'MinimizeToTray' : 'False'}
-                    # Save in-memory config to ini file
-                    config_settings.write(configfile)
+                create_new_config_file()
 
         else:
             # Default Config Creation
 
             print(f"Configuration file '{config_file_path}' not found.")
+
             # Handle the case where the file doesn't exist, e.g., create a default one
-            with open('config.ini', 'w') as configfile:
-                Endpoints = Finder().getEndpointList()
-                Encoding = Finder().getEncodingList()
-                config_settings['Server Settings'] = {'serverIP' : f'{Finder().backend.get_local_ipv4_address()}', 'serverPort' : '65530' , 'endpoint' : f'{Endpoints[0]['id']}' , 'encoding' : f'{Encoding[0]['key']}'}
-                config_settings['App Settings'] = {'AutoStart' : 'False','KeepLastState' : 'False', 'MinimizeToTray' : 'False'}
-                # Save in-memory config to ini file
-                config_settings.write(configfile)
+            create_new_config_file()
 
         self.backend = Backend(config_settings)
 
@@ -198,7 +121,6 @@ class MainWindow(QMainWindow):
         index_file = os.path.join(current_dir, "frontend", "index.html")
         settings_file = os.path.join(current_dir, "frontend", "settings.html")
 
-        
         tab = WebTab(self.backend, index_file)
         self.tabs.addTab(tab, "Server")
 
@@ -220,6 +142,8 @@ class MainWindow(QMainWindow):
         server_action = QAction("Toggle Server", self)
         server_action.triggered.connect(self.backend.toggleServer)
         tray_menu.addAction(server_action)
+
+        tray_menu.addSeparator()
 
         quit_action = QAction("Exit", self)
         quit_action.triggered.connect(QApplication.instance().quit)
@@ -259,8 +183,6 @@ class MainWindow(QMainWindow):
             self.hide()
 
 if __name__ == "__main__":
-    #main()
-
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
