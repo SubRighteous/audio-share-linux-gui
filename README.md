@@ -77,5 +77,5 @@ Used for styling the embedded web UI components.\
 License: MIT [(details)](https://github.com/twbs/bootstrap/blob/main/LICENSE)
 
 Audio-Share
-Core functionality provided by the as-cmd tool.
+Core functionality provided by the as-cmd tool.\
 License: Apache-2.0 license [(details)](https://github.com/mkckr0/audio-share/blob/main/LICENSE)
