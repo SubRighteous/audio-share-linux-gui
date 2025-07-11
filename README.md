@@ -4,13 +4,13 @@
 A simple PyQt6-based GUI for [mkckr0/audio-share](https://github.com/mkckr0/audio-share), designed to make sharing audio on Linux easier — with the goal of matching the features available on the official Windows version. 
 
 This project does not include the main audio-share command-line tool (as-cmd) for Linux.
-You must download [audio-share-server-cmd-linux](https://github.com/mkckr0/audio-share/releases) separately and extract only "as-cmd" in the root directory of this project for the app to function properly.
+You must download [audio-share-server-cmd-linux](https://github.com/mkckr0/audio-share/releases) separately and extract the "as-cmd" in the root directory of this project for the app to function properly.
 
 This is not an official Audio Share application.
-It's an independent, personal project created to improve the my experience of using audio-share on Linux.
+It's an independent, personal project created to improve my experience using audio-share on Linux.
 There is no affiliation or support from the original developers of [mkckr0/audio-share](https://github.com/mkckr0/audio-share).
 
-This app executes the terminal commands required to launch and manage an audio-share server. Also the icon used in this project is from the audio-share project by [mkckr0](https://github.com/mkckr0).
+This app executes the terminal commands required to launch and manage an audio-share server. The icon used in this project is also from the audio-share project by [mkckr0](https://github.com/mkckr0).
 All rights to the original artwork belong to its respective creator.
 
 ## Screenshots
@@ -58,11 +58,11 @@ Move "as-cmd" to the "src" folder
 mv as-cmd ./src/as-cmd
 ```
 
-(Optional) Make an python virutal enviroment
+(Optional) Create a Python virtual environment
 ```bash
 python -m venv .venv
 ```
-Activate the python venv
+Activate the Python virtual environment
 ```bash
 source .venv/bin/activate
 ```
@@ -72,13 +72,13 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
-Start the app (with python venv)
+Start the app (using the Python virtual environment)
 
 ```bash
 .venv/bin/python ./src/main.py
 ```
 
-Start the app (without python venv)
+Start the app (without a virtual environment)
 ```
 <python install path>/bin/python ./src/main.py
 ```
