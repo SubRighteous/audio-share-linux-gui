@@ -21,6 +21,7 @@ All rights to the original artwork belong to its respective creator.
 ## Requirements
 * A PC with Linux
 * Linux with PipeWire
+* Linux desktop environment with a system tray
 * Python 3 (tested on 3.13)
 * xcb plugin for qt
 ```bash
@@ -88,45 +89,7 @@ Clone the project
 git clone https://github.com/SubRighteous/audio-share-linux-gui
 ```
 
-Go to the project directory
-
-```bash
-cd audio-share-linux-gui-main
-```
-
-Download the latest version of as-cmd from [https://github.com/mkckr0/audio-share/releases](https://github.com/mkckr0/audio-share/releases)
-```bash
-wget https://github.com/mkckr0/audio-share/releases/download/v0.3.4/audio-share-server-cmd-linux.tar.gz
-```
-
-Extract to the "src" folder
-```bash
-tar -xf audio-share-server-cmd-linux.tar.gz --strip-components 2
-```
-
-Move "as-cmd" to the "src" folder
-```bash
-mv as-cmd ./src/as-cmd
-```
-
-(Optional) Make an python virutal enviroment
-```bash
-python -m venv .venv
-```
-Activate the python venv
-```bash
-source .venv/bin/activate
-```
-Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Run build.sh
-```bash
-./build.sh
-```
+For instructions, follow the [Building the project](https://github.com/SubRighteous/audio-share-linux-gui/wiki/Build-from-Source) guide on the wiki.
 
 ## Used Third-party Libraries
 
