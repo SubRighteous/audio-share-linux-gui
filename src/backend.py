@@ -1,6 +1,8 @@
 import subprocess
 import socket
 import re
+import os
+from pathlib import Path
 
 from PyQt6.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal, QThread
 
@@ -20,8 +22,10 @@ def string_to_bool(s):
 class AudioShare():
     def getEndpointList(self):
 
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
         # Get the list of device endpoints
-        command = ["./as-cmd" , "-l"]
+        command = [f'{current_dir}/as-cmd' , "-l"]
 
         _stop_requested = False
         _process = subprocess.run(
@@ -32,8 +36,9 @@ class AudioShare():
         output = _process.stdout
         
         endpoints = []
-
+        print(output)
         for line in output.splitlines():
+            print(line)
             match = re.search(r'(\*?)\s*id:\s*(\d+)\s+name:\s*(.+)', line)
             if match:
                 is_active = match.group(1) == "*"
@@ -50,8 +55,9 @@ class AudioShare():
     def get_endpoint_id_from_name(self, name):
         endpoint_list = self.getEndpointList()
         endpoint_id = None
-
+        print(endpoint_list)
         for ep in endpoint_list:
+            print(ep['name'])
             if name == ep['name']:
                 endpoint_id = ep['id']
 
@@ -59,8 +65,11 @@ class AudioShare():
         
     
     def getEncodingList(self):
+
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
         # Get the list of encoding
-        command = ["./as-cmd" , "--list-encoding"]
+        command = [current_dir + "/as-cmd" , "--list-encoding"]
 
         _stop_requested = False
         _process = subprocess.run(
@@ -156,9 +165,11 @@ class Backend(QObject):
     audio_endpoint_name = None
     audio_encoding = None
 
-    def __init__(self , config_file):
+    def __init__(self , config_file , config_file_dir):
         super().__init__()
         self.config_settings = config_file
+        self.config_file_dir = config_file_dir
+
         if config_file is not None:
             self.setEncoding(config_file['Server Settings']['encoding'])
             
@@ -170,14 +181,18 @@ class Backend(QObject):
             if AudioShare().get_endpoint_id_from_name(self.audio_endpoint_name) == config_file['Server Settings']['endpoint']:
                 self.setEndpoint(config_file['Server Settings']['endpoint'])
             else:
+                print(self.audio_endpoint_name)
+                print(AudioShare().get_endpoint_id_from_name(self.audio_endpoint_name))
                 self.setEndpoint(AudioShare().get_endpoint_id_from_name(self.audio_endpoint_name))
             
             
     @pyqtSlot(result='QVariant')
     def getEndpointList(self):
 
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
         # Get the list of device endpoints
-        command = ["./as-cmd" , "-l"]
+        command = [current_dir + "/as-cmd" , "-l"]
 
         _stop_requested = False
         _process = subprocess.run(
@@ -205,8 +220,10 @@ class Backend(QObject):
 
     @pyqtSlot(result='QVariant')
     def getEncodingList(self):
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
         # Get the list of encoding
-        command = ["./as-cmd" , "--list-encoding"]
+        command = [current_dir + "/as-cmd" , "--list-encoding"]
 
         _stop_requested = False
         _process = subprocess.run(
@@ -365,7 +382,7 @@ class Backend(QObject):
         else:
             # Save wether the server was running or not
             print("Saving server state to config.ini")
-            with open('config.ini', 'w') as config_file:
+            with open(os.path.join(self.config_file_dir ,'config.ini'), 'w') as config_file:
                 self.config_settings.set('App Settings', 'server_laststate' , str(self.ServerRunning))
 
                 self.config_settings.write(config_file)
@@ -402,7 +419,7 @@ class Backend(QObject):
             return
 
         print("Saving settings to config.ini")
-        with open('config.ini', 'w') as config_file:
+        with open(os.path.join(self.config_file_dir ,'config.ini'), 'w') as config_file:
             self.config_settings.set('Server Settings' , 'serverip' , str(self.serverAddress))
             self.config_settings.set('Server Settings', 'serverport' , str(self.serverPort))
             self.config_settings.set('Server Settings', 'endpoint' , str(self.audio_endpoint_id))
@@ -423,9 +440,10 @@ class SettingsBackend(QObject):
 
     settings = ApplcationSettings()
 
-    def __init__(self , config_file):
+    def __init__(self , config_file , config_file_dir):
         super().__init__()
         self.config_settings = config_file
+        self.config_file_dir = config_file_dir
         if config_file is not None:
             self.setAutoStart(config_file['App Settings']['autostart'])
             self.setMinimizeToTray(config_file['App Settings']['minimizetotray'])
@@ -466,7 +484,7 @@ class SettingsBackend(QObject):
             return
 
         print("Saving settings to config.ini")
-        with open('config.ini', 'w') as config_file:
+        with open(os.path.join(self.config_file_dir ,'config.ini'), 'w') as config_file:
 
             self.config_settings.set('App Settings', 'autostart' , str(self.settings.AutoStart))
             self.config_settings.set('App Settings', 'keeplaststate' , str(self.settings.KeepLastState))

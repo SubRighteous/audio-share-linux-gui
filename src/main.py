@@ -5,19 +5,28 @@ from PyQt6.QtWidgets import QApplication ,QMainWindow, QWidget, QVBoxLayout , QT
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtWebChannel import QWebChannel
-from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QUrl , QSharedMemory
 from PyQt6.QtGui import QIcon , QAction
 import os
+from pathlib import Path
 from backend import Backend, SettingsBackend , AudioShare , string_to_bool
 
 config_settings = None
 secondary_window = None
 
+def get_user_config_path() -> Path:
+    config_dir = Path.home() / ".config" / 'audio-share-py'
+    config_dir.mkdir(parents=True, exist_ok=True)
+    return config_dir
+
 # Creates a new Config File with default values
 def create_new_config_file():
-    with open('config.ini', 'w') as configfile:
+    
+    with open(os.path.join(get_user_config_path() , 'config.ini'), 'w') as configfile:
         Endpoints = AudioShare().getEndpointList()
         Encoding = AudioShare().getEncodingList()
+        print(Endpoints)
+        print(Encoding)
         config_settings['Server Settings'] = {'serverIP' : f'{AudioShare().get_local_ipv4_address()}', 'serverPort' : '65530' , 'endpoint' : f'{Endpoints[0]['id']}' , 'endpoint_name': f'{Endpoints[0]['name']}', 'encoding' : f'{Encoding[0]['key']}'}
         config_settings['App Settings'] = {'AutoStart' : 'False','KeepLastState' : 'False', 'MinimizeToTray' : 'False' , 'server_laststate' : False}
 
@@ -45,40 +54,6 @@ class WebTab(QWebEngineView):
         # Load local HTML file
         self.load(QUrl.fromLocalFile(html_path))
 
-
-class SettingsWindow(QMainWindow):
-    def __init__(self, url , settings_channel):
-        super().__init__()
-        self.setWindowTitle("App Settings")
-        self.resize(800, 600)
-
-        self.web_view = QWebEngineView()
-
-        page = type("TempPage", (QWebEnginePage,), {
-            "javaScriptConsoleMessage": lambda self, level, msg, line, src: print(
-                f"[JS {level.name}] {msg} (line {line}, source {src})")
-        })(self.web_view)
-
-        channel = QWebChannel()
-        channel.registerObject('backend', settings_channel)
-        page.setWebChannel(channel)
-        self.web_view.setPage(page)
-    
-        #print(url)
-        self.web_view.load(url)
-
-        central_widget = QWidget()
-        layout = QVBoxLayout(central_widget)
-        layout.addWidget(self.web_view)
-        self.setCentralWidget(central_widget)
-
-    def closeEvent(self, event):
-        # Just hide the window instead of closing, optional
-        #print("Secondary window closed (but app stays running)")
-        self.hide()
-        event.accept()
-        
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -88,7 +63,9 @@ class MainWindow(QMainWindow):
         global config_settings
         config_settings = ConfigParser()
 
-        config_file_path = 'config.ini'  # Replace with your actual file path
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        config_file_path = os.path.join(get_user_config_path(), 'config.ini') 
 
         if os.path.exists(config_file_path):
             config_settings.read(config_file_path)
@@ -111,9 +88,9 @@ class MainWindow(QMainWindow):
             # Handle the case where the file doesn't exist, e.g., create a default one
             create_new_config_file()
 
-        self.backend = Backend(config_settings)
+        self.backend = Backend(config_settings , get_user_config_path())
 
-        self.settings_backend = SettingsBackend(config_settings)
+        self.settings_backend = SettingsBackend(config_settings , get_user_config_path())
         self.tabs = QTabWidget()
         self.setCentralWidget(self.tabs)
 
@@ -184,6 +161,13 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+
+    shared_memory = QSharedMemory("audioshare_instance")
+
+    if not shared_memory.create(1):
+        print("Another instance is already running.")
+        sys.exit(0)
+
     window = MainWindow()
     window.show()
 

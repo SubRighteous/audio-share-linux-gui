@@ -150,7 +150,7 @@ function OnEndpointChange(){
 
         if (optionValue == select.value){
             options[i].classList.add("active");
-            backend.setEncodingName(optionText)
+            backend.setEncodingName(optionText);
         }
         else{
             options[i].classList.remove("active");
