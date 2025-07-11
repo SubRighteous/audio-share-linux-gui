@@ -28,7 +28,7 @@ All rights to the original artwork belong to its respective creator.
 ```
 * as-cmd (0.34 or later) from [mkckr0/audio-share](https://github.com/mkckr0/audio-share/releases)
 
-## Install/Run from Source
+## Run from Source
 
 Clone the project
 

@@ -1,7 +1,7 @@
 import sys
 from configparser import ConfigParser
 
-from PyQt6.QtWidgets import QApplication ,QMainWindow, QWidget, QVBoxLayout , QTabWidget , QSystemTrayIcon , QMenu
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget , QSystemTrayIcon , QMenu
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtWebChannel import QWebChannel

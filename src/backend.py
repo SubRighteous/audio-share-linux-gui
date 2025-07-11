@@ -2,7 +2,6 @@ import subprocess
 import socket
 import re
 import os
-from pathlib import Path
 
 from PyQt6.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal, QThread
 
