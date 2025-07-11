@@ -4,13 +4,13 @@
 A simple PyQt6-based GUI for [mkckr0/audio-share](https://github.com/mkckr0/audio-share), designed to make sharing audio on Linux easier — with the goal of matching the features available on the official Windows version. 
 
 This project does not include the main audio-share command-line tool (as-cmd) for Linux.
-You must download [audio-share-server-cmd-linux](https://github.com/mkckr0/audio-share/releases) separately and extract only "as-cmd" in the root directory of this project for the app to function properly.
+You must download [audio-share-server-cmd-linux](https://github.com/mkckr0/audio-share/releases) separately and extract the "as-cmd" in the root directory of this project for the app to function properly.
 
 This is not an official Audio Share application.
-It's an independent, personal project created to improve the my experience of using audio-share on Linux.
+It's an independent, personal project created to improve my experience using audio-share on Linux.
 There is no affiliation or support from the original developers of [mkckr0/audio-share](https://github.com/mkckr0/audio-share).
 
-This app executes the terminal commands required to launch and manage an audio-share server. Also the icon used in this project is from the audio-share project by [mkckr0](https://github.com/mkckr0).
+This app executes the terminal commands required to launch and manage an audio-share server. The icon used in this project is also from the audio-share project by [mkckr0](https://github.com/mkckr0).
 All rights to the original artwork belong to its respective creator.
 
 ## Screenshots
@@ -21,6 +21,7 @@ All rights to the original artwork belong to its respective creator.
 ## Requirements
 * A PC with Linux
 * Linux with PipeWire
+* Linux desktop environment with a system tray
 * Python 3 (tested on 3.13)
 * xcb plugin for qt
 ```bash
@@ -42,7 +43,7 @@ Go to the project directory
 cd audio-share-linux-gui-main
 ```
 
-Download the lastest version of as-cmd from [https://github.com/mkckr0/audio-share/releases](https://github.com/mkckr0/audio-share/releases)
+Download the latest version of as-cmd from [https://github.com/mkckr0/audio-share/releases](https://github.com/mkckr0/audio-share/releases)
 ```bash
 wget https://github.com/mkckr0/audio-share/releases/download/v0.3.4/audio-share-server-cmd-linux.tar.gz
 ```
@@ -57,11 +58,11 @@ Move "as-cmd" to the "src" folder
 mv as-cmd ./src/as-cmd
 ```
 
-(Optional) Make an python virutal enviroment
+(Optional) Create a Python virtual environment
 ```bash
 python -m venv .venv
 ```
-Activate the python venv
+Activate the Python virtual environment
 ```bash
 source .venv/bin/activate
 ```
@@ -71,13 +72,13 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
-Start the app (with python venv)
+Start the app (using the Python virtual environment)
 
 ```bash
 .venv/bin/python ./src/main.py
 ```
 
-Start the app (without python venv)
+Start the app (without a virtual environment)
 ```
 <python install path>/bin/python ./src/main.py
 ```
@@ -88,45 +89,7 @@ Clone the project
 git clone https://github.com/SubRighteous/audio-share-linux-gui
 ```
 
-Go to the project directory
-
-```bash
-cd audio-share-linux-gui-main
-```
-
-Download the lastest version of as-cmd from [https://github.com/mkckr0/audio-share/releases](https://github.com/mkckr0/audio-share/releases)
-```bash
-wget https://github.com/mkckr0/audio-share/releases/download/v0.3.4/audio-share-server-cmd-linux.tar.gz
-```
-
-Extract to the "src" folder
-```bash
-tar -xf audio-share-server-cmd-linux.tar.gz --strip-components 2
-```
-
-Move "as-cmd" to the "src" folder
-```bash
-mv as-cmd ./src/as-cmd
-```
-
-(Optional) Make an python virutal enviroment
-```bash
-python -m venv .venv
-```
-Activate the python venv
-```bash
-source .venv/bin/activate
-```
-Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Run build.sh
-```bash
-./build.sh
-```
+For instructions, follow the [Building the project](https://github.com/SubRighteous/audio-share-linux-gui/wiki/Build-from-Source) guide on the wiki.
 
 ## Used Third-party Libraries
 
@@ -138,6 +101,6 @@ Bootstrap\
 Used for styling the embedded web UI components.\
 License: MIT [(details)](https://github.com/twbs/bootstrap/blob/main/LICENSE)
 
-Audio-Share
+Audio-Share\
 Core functionality provided by the as-cmd tool.\
 License: Apache-2.0 license [(details)](https://github.com/mkckr0/audio-share/blob/main/LICENSE)
