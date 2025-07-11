@@ -1,0 +1,10 @@
+app_screenshot_01.png
+app_screenshot_02.png
+Audio-Share.desktop
+
+main.dist
+main.build
+.venv
+
+src/__pycache__
+src/as-cmd
