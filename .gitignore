@@ -1,6 +1,7 @@
 app_screenshot_01.png
 app_screenshot_02.png
 Audio-Share.desktop
+Audio-Share (copy).desktop
 
 main.dist
 main.build
@@ -8,3 +9,6 @@ main.build
 
 src/__pycache__
 src/as-cmd
+
+audio-share-server-cmd-linux.tar.gz
+as-cmd
