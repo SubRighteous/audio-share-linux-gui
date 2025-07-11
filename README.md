@@ -42,7 +42,7 @@ Go to the project directory
 cd audio-share-linux-gui-main
 ```
 
-Download the lastest version of as-cmd from [https://github.com/mkckr0/audio-share/releases](https://github.com/mkckr0/audio-share/releases)
+Download the latest version of as-cmd from [https://github.com/mkckr0/audio-share/releases](https://github.com/mkckr0/audio-share/releases)
 ```bash
 wget https://github.com/mkckr0/audio-share/releases/download/v0.3.4/audio-share-server-cmd-linux.tar.gz
 ```
