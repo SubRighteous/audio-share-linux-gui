@@ -331,30 +331,32 @@ class Backend(QObject):
             print("Starting the server")
             self.setServerRunning(True)
             
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+
             # Example command for starting the server "./as-cmd --bind=192.168.1.77:39999"
             if self.serverAddress is None or self.serverPort is None:
-                self.serverThread = ServerThread(["./as-cmd", "--bind"])
+                self.serverThread = ServerThread([current_dir + "/as-cmd", "--bind"])
             else:
                 
                 if self.is_endpoint_exist(self.audio_endpoint_id) is False and self.is_encoding_supported(self.audio_encoding) is False:
                     if len(str(self.serverAddress)) == 0 and len(str(self.serverPort)) > 0:
-                        self.serverThread = ServerThread(["./as-cmd", "--bind=" + str(self.get_local_ipv4_address()) + ":" + str(self.serverPort)])
+                        self.serverThread = ServerThread([current_dir + "/as-cmd", "--bind=" + str(self.get_local_ipv4_address()) + ":" + str(self.serverPort)])
                     elif len(str(self.serverAddress)) > 0 and len(str(self.serverPort)) == 0:
-                            self.serverThread = ServerThread(["./as-cmd", "--bind=" + str(self.serverAddress)])
+                            self.serverThread = ServerThread([current_dir + "/as-cmd", "--bind=" + str(self.serverAddress)])
                     elif len(str(self.serverAddress)) == 0 and len(str(self.serverPort)) == 0:
-                        self.serverThread = ServerThread(["./as-cmd", "--bind"])
+                        self.serverThread = ServerThread([current_dir + "/as-cmd", "--bind"])
                     else:
-                        self.serverThread = ServerThread(["./as-cmd", "--bind=" + str(self.serverAddress) + ":" + str(self.serverPort)])
+                        self.serverThread = ServerThread([current_dir + "/as-cmd", "--bind=" + str(self.serverAddress) + ":" + str(self.serverPort)])
                 else:
                     #self.serverThread = ServerThread(["./as-cmd" , "-b", "-e" , str(self.audio_endpoint_id)])
                     if len(str(self.serverAddress)) == 0 and len(str(self.serverPort)) > 0:
-                        self.serverThread = ServerThread(["./as-cmd" , "--bind=" + str(self.get_local_ipv4_address()) + ":" + str(self.serverPort) , "-e" , str(self.audio_endpoint_id) , '--encoding' , str(self.audio_encoding)])
+                        self.serverThread = ServerThread([current_dir + "/as-cmd" , "--bind=" + str(self.get_local_ipv4_address()) + ":" + str(self.serverPort) , "-e" , str(self.audio_endpoint_id) , '--encoding' , str(self.audio_encoding)])
                     elif len(str(self.serverAddress)) > 0 and len(str(self.serverPort)) == 0:
-                        self.serverThread = ServerThread(["./as-cmd", "--bind=" + str(self.serverAddress)] , "-e" , str(self.audio_endpoint_id) , '--encoding' , str(self.audio_encoding))
+                        self.serverThread = ServerThread([current_dir + "/as-cmd", "--bind=" + str(self.serverAddress)] , "-e" , str(self.audio_endpoint_id) , '--encoding' , str(self.audio_encoding))
                     elif len(str(self.serverAddress)) == 0 and len(str(self.serverPort)) == 0:
-                        self.serverThread = ServerThread(["./as-cmd", "--bind" , "-e" , str(self.audio_endpoint_id) , '--encoding' , str(self.audio_encoding)])
+                        self.serverThread = ServerThread([current_dir + "/as-cmd", "--bind" , "-e" , str(self.audio_endpoint_id) , '--encoding' , str(self.audio_encoding)])
                     else:
-                        self.serverThread = ServerThread(["./as-cmd", "--bind=" + str(self.serverAddress) + ":" + str(self.serverPort) , "-e" , str(self.audio_endpoint_id) , '--encoding' , str(self.audio_encoding)])
+                        self.serverThread = ServerThread([current_dir + "/as-cmd", "--bind=" + str(self.serverAddress) + ":" + str(self.serverPort) , "-e" , str(self.audio_endpoint_id) , '--encoding' , str(self.audio_encoding)])
             
             #self.serverThread.logOutput.connect(lambda msg: print("LOG:", msg))
             #self.serverThread.finished.connect(lambda: print("Server thread finished"))

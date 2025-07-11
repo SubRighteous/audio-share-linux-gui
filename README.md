@@ -33,39 +33,101 @@ All rights to the original artwork belong to its respective creator.
 Clone the project
 
 ```bash
-  git clone https://github.com/SubRighteous/audio-share-linux-gui
+git clone https://github.com/SubRighteous/audio-share-linux-gui
 ```
 
 Go to the project directory
 
 ```bash
-  cd audio-share-linux-gui-main
+cd audio-share-linux-gui-main
+```
+
+Download the lastest version of as-cmd from [https://github.com/mkckr0/audio-share/releases](https://github.com/mkckr0/audio-share/releases)
+```bash
+wget https://github.com/mkckr0/audio-share/releases/download/v0.3.4/audio-share-server-cmd-linux.tar.gz
+```
+
+Extract to the "src" folder
+```bash
+tar -xf audio-share-server-cmd-linux.tar.gz --strip-components 2
+```
+
+Move "as-cmd" to the "src" folder
+```bash
+mv as-cmd ./src/as-cmd
 ```
 
 (Optional) Make an python virutal enviroment
 ```bash
-  python -m venv .venv
+python -m venv .venv
 ```
 Activate the python venv
 ```bash
-  source .venv/bin/activate
+source .venv/bin/activate
 ```
 Install dependencies
 
 ```bash
-  pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 Start the app (with python venv)
 
 ```bash
-  .venv/bin/python ./src/main.py
+.venv/bin/python ./src/main.py
 ```
 
 Start the app (without python venv)
 ```
-  <python install path>/bin/python ./src/main.py
+<python install path>/bin/python ./src/main.py
 ```
+## Build from Source
+Clone the project
+
+```bash
+git clone https://github.com/SubRighteous/audio-share-linux-gui
+```
+
+Go to the project directory
+
+```bash
+cd audio-share-linux-gui-main
+```
+
+Download the lastest version of as-cmd from [https://github.com/mkckr0/audio-share/releases](https://github.com/mkckr0/audio-share/releases)
+```bash
+wget https://github.com/mkckr0/audio-share/releases/download/v0.3.4/audio-share-server-cmd-linux.tar.gz
+```
+
+Extract to the "src" folder
+```bash
+tar -xf audio-share-server-cmd-linux.tar.gz --strip-components 2
+```
+
+Move "as-cmd" to the "src" folder
+```bash
+mv as-cmd ./src/as-cmd
+```
+
+(Optional) Make an python virutal enviroment
+```bash
+python -m venv .venv
+```
+Activate the python venv
+```bash
+source .venv/bin/activate
+```
+Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Run build.sh
+```bash
+./build.sh
+```
+
 ## Used Third-party Libraries
 
 PyQt6\
